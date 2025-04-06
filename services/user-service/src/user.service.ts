@@ -12,9 +12,13 @@ import {
   FindByEmailResponse,
   FindByIdRequest,
   FindByIdResponse,
+  protobufPackage,
   USER_PACKAGE_NAME,
+  USER_SERVICE_NAME,
   UserServiceClient,
 } from '@/interfaces/user';
+
+console.log(USER_SERVICE_NAME, protobufPackage, USER_PACKAGE_NAME);
 
 @Injectable()
 export class UserService implements OnModuleInit {

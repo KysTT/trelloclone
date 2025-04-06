@@ -8,6 +8,8 @@ import {
   FindByEmailResponse,
   FindByIdRequest,
   FindByIdResponse,
+  protobufPackage,
+  USER_PACKAGE_NAME,
   USER_SERVICE_NAME,
   UserServiceController,
   UserServiceControllerMethods,
@@ -16,6 +18,7 @@ import { join } from 'path';
 import { JwtAuthInterceptor } from '@/jwt.interceptor';
 
 console.log(join(__dirname, './proto/user.proto'));
+console.log(USER_SERVICE_NAME, protobufPackage, USER_PACKAGE_NAME);
 @Controller('api/user')
 @UserServiceControllerMethods()
 export class UserController implements UserServiceController {
@@ -37,7 +40,7 @@ export class UserController implements UserServiceController {
   }
 
   @UseInterceptors(JwtAuthInterceptor)
-  @GrpcMethod(USER_SERVICE_NAME, 'findOneByEmail')
+  @GrpcMethod(USER_SERVICE_NAME, 'findOneById')
   async findOneById(data: FindByIdRequest): Promise<FindByIdResponse> {
     const user = await this.userService.findOneById(data);
     if (!user) {
