@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc Register (CreateUserRequest) returns (CreateUserResponse);
+  rpc FindOneByEmail (FindByEmailRequest) returns (FindByEmailResponse);
+  rpc FindOneById (FindByIdRequest) returns (FindByIdResponse);
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string username = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message CreateUserResponse {
+  string name = 1;
+  string username = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message FindByEmailRequest {
+  string email = 1;
+}
+
+message FindByEmailResponse {
+  int32 id = 1;
+  string name = 2;
+  string username = 3;
+  string email = 4;
+}
+
+message FindByIdRequest {
+  int32 id = 1;
+}
+
+message FindByIdResponse {
+  int32 id = 1;
+  string name = 2;
+  string username = 3;
+  string email = 4;
+  repeated DrawWorkspaceDto workspaces = 5;
+  repeated DrawBoardDto boards_member = 6;
+  repeated DrawCardDto attached_cards = 7;
+}
+
+message DrawWorkspaceDto {
+  int32 id = 1;
+  string name = 2;
+  string shortname = 3;
+  repeated DrawBoardDto boards = 4;
+}
+
+message DrawBoardDto {
+  int32 id = 1;
+  string name = 2;
+  string visibility = 3;
+}
+
+message DrawCardDto {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+}
