@@ -35,7 +35,12 @@ export class JwtAuthInterceptor implements NestInterceptor {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
-      rpcContext.getData().user = { id: payload.sub, email: payload.email };
+      rpcContext.getData().user = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        username: payload.username,
+      };
       return next.handle();
     } catch (error) {
       throw new RpcException('Invalid token');

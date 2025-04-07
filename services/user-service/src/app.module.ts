@@ -6,16 +6,10 @@ import { User } from '@/entities/user.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  protobufPackage,
-  USER_PACKAGE_NAME,
-  USER_SERVICE_NAME,
-} from '@/interfaces/user';
+import { protobufPackage, USER_PACKAGE_NAME } from '@/interfaces/user';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthInterceptor } from '@/jwt.interceptor';
 
-console.log(join(__dirname, './proto/user.proto'));
-console.log(USER_SERVICE_NAME, protobufPackage, USER_PACKAGE_NAME);
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),

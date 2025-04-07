@@ -9,16 +9,12 @@ import {
   CreateUserRequest,
   CreateUserResponse,
   FindByEmailRequest,
-  FindByEmailResponse,
-  FindByIdRequest,
-  FindByIdResponse,
-  protobufPackage,
+  FindUserFullResponse,
+  FindUserResponse,
   USER_PACKAGE_NAME,
   USER_SERVICE_NAME,
   UserServiceClient,
 } from '@/interfaces/user';
-
-console.log(USER_SERVICE_NAME, protobufPackage, USER_PACKAGE_NAME);
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -34,7 +30,7 @@ export class UserService implements OnModuleInit {
 
   onModuleInit() {
     this.userService =
-      this.client.getService<UserServiceClient>(USER_PACKAGE_NAME);
+      this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
   }
 
   async register(data: CreateUserRequest): Promise<CreateUserResponse> {
@@ -46,18 +42,20 @@ export class UserService implements OnModuleInit {
     });
   }
 
-  async findOneByEmail(
+  async findUserByEmail(
     data: FindByEmailRequest,
-  ): Promise<FindByEmailResponse | null> {
+  ): Promise<FindUserResponse | null> {
     return await this.userRepository.findOne({
       where: { email: data.email },
     });
   }
 
-  async findOneById(data: FindByIdRequest): Promise<FindByIdResponse | null> {
+  async findUserByEmailFull(
+    data: FindByEmailRequest,
+  ): Promise<FindUserFullResponse | null> {
     return await this.userRepository.findOne({
-      where: { id: data.id },
-      relations: ['workspaces', 'boards_member', 'attached_cards'],
+      where: { email: data.email },
+      relations: ['workspaces', 'attached_cards', 'boards_member'],
     });
   }
 }

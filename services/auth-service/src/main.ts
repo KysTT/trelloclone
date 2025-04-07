@@ -5,7 +5,6 @@ import { join } from 'path';
 import { protobufPackage } from '@/interfaces/auth';
 
 async function bootstrap() {
-  console.log(join(__dirname, './proto/auth.proto'));
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {

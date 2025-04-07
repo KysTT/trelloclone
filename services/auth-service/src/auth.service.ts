@@ -40,7 +40,12 @@ export class AuthService implements OnModuleInit {
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
       throw new RpcException('Invalid credentials');
     }
-    const payload = { email: user.email, sub: user.id };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      name: user.name,
+      username: user.username,
+    };
     const token = this.jwtService.sign(payload);
     return { accessToken: token };
   }

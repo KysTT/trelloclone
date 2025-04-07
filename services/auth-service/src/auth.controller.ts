@@ -19,15 +19,12 @@ export class AuthController implements AuthServiceController {
 
   @GrpcMethod(AUTH_SERVICE_NAME, 'login')
   async login(data: LoginRequest): Promise<LoginResponse> {
-    console.log('UserService: Received Login request for email:', data.email);
     return this.authService.login(data);
   }
 
   @UseInterceptors(JwtAuthInterceptor)
   @GrpcMethod(AUTH_SERVICE_NAME, 'validateToken')
   validateToken(data: ValidateTokenRequest): ValidateTokenResponse {
-    const user = data['user'];
-    console.log(user);
-    return user;
+    return data['user'];
   }
 }

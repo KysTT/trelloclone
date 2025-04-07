@@ -5,20 +5,15 @@ import {
   CreateUserRequest,
   CreateUserResponse,
   FindByEmailRequest,
-  FindByEmailResponse,
-  FindByIdRequest,
-  FindByIdResponse,
-  protobufPackage,
-  USER_PACKAGE_NAME,
+  FindMeRequest,
+  FindUserFullResponse,
+  FindUserResponse,
   USER_SERVICE_NAME,
   UserServiceController,
   UserServiceControllerMethods,
 } from '@/interfaces/user';
-import { join } from 'path';
 import { JwtAuthInterceptor } from '@/jwt.interceptor';
 
-console.log(join(__dirname, './proto/user.proto'));
-console.log(USER_SERVICE_NAME, protobufPackage, USER_PACKAGE_NAME);
 @Controller('api/user')
 @UserServiceControllerMethods()
 export class UserController implements UserServiceController {
@@ -30,9 +25,9 @@ export class UserController implements UserServiceController {
   }
 
   @UseInterceptors(JwtAuthInterceptor)
-  @GrpcMethod(USER_SERVICE_NAME, 'findOneByEmail')
-  async findOneByEmail(data: FindByEmailRequest): Promise<FindByEmailResponse> {
-    const user = await this.userService.findOneByEmail(data);
+  @GrpcMethod(USER_SERVICE_NAME, 'findUserByEmail')
+  async findUserByEmail(data: FindByEmailRequest): Promise<FindUserResponse> {
+    const user = await this.userService.findUserByEmail(data);
     if (!user) {
       throw new RpcException('User does not exist');
     }
@@ -40,9 +35,33 @@ export class UserController implements UserServiceController {
   }
 
   @UseInterceptors(JwtAuthInterceptor)
-  @GrpcMethod(USER_SERVICE_NAME, 'findOneById')
-  async findOneById(data: FindByIdRequest): Promise<FindByIdResponse> {
-    const user = await this.userService.findOneById(data);
+  @GrpcMethod(USER_SERVICE_NAME, 'findUserByEmailFull')
+  async findUserByEmailFull(
+    data: FindByEmailRequest,
+  ): Promise<FindUserFullResponse> {
+    const user = await this.userService.findUserByEmailFull(data);
+    if (!user) {
+      throw new RpcException('User does not exist');
+    }
+    return user;
+  }
+
+  @UseInterceptors(JwtAuthInterceptor)
+  @GrpcMethod(USER_SERVICE_NAME, 'findMe')
+  findMe(data: FindMeRequest): Promise<FindUserResponse> {
+    if (!data['user']) {
+      throw new RpcException('Something went wrong');
+    }
+    return data['user'];
+  }
+
+  @UseInterceptors(JwtAuthInterceptor)
+  @GrpcMethod(USER_SERVICE_NAME, 'findMeFull')
+  async findMeFull(data: FindMeRequest): Promise<FindUserFullResponse> {
+    if (!data['user']) {
+      throw new RpcException('Something went wrong');
+    }
+    const user = await this.userService.findUserByEmailFull(data['user'].email);
     if (!user) {
       throw new RpcException('User does not exist');
     }
