@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package workspace;
+
+service WorkspaceService {
+  rpc Create (CreateWorkspaceRequest) returns (WorkspaceResponse);
+  rpc FindByCurrUser (EmptyMessageRequest) returns (WorkspacesResponse);
+  rpc FindByCurrUserFull (EmptyMessageRequest) returns (WorkspacesWithBoardsResponse);
+  rpc Edit (EditWorkspaceRequest) returns (WorkspaceResponse);
+  rpc FindByShortname (FindByShortnameRequest) returns (WorkspaceResponse);
+  rpc FindByBoardId (FindByBoardIdRequest) returns (WorkspaceWithBoardsResponse);
+}
+
+message EmptyMessageRequest {}
+
+message FindByShortnameRequest {
+  string shortname = 1;
+}
+
+message FindByBoardIdRequest {
+  int32 id = 1;
+}
+
+message CreateWorkspaceRequest {
+  string name = 1;
+  string shortname = 2;
+}
+
+message EditWorkspaceRequest {
+  int32 id = 1;
+  string name = 2;
+  string shortname = 3;
+}
+
+message WorkspacesResponse {
+  repeated WorkspaceResponse workspaces = 1;
+}
+
+message WorkspaceResponse {
+  int32 id = 1;
+  string name = 2;
+  string shortname = 3;
+}
+
+message WorkspacesWithBoardsResponse {
+  repeated WorkspaceWithBoardsResponse workspaces = 1;
+}
+
+message WorkspaceWithBoardsResponse {
+  int32 id = 1;
+  string name = 2;
+  string shortname = 3;
+  repeated Board boards = 4;
+}
+
+message Board {
+  int32 id = 1;
+  string name = 2;
+  string visibility = 3;
+}
