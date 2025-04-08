@@ -93,9 +93,11 @@ export class WorkspaceService implements OnModuleInit {
   async findByBoardId(
     data: FindByBoardIdRequest,
   ): Promise<WorkspaceWithBoardsResponse> {
+    console.log(data.id);
     const board = await this.boardRepository.findOne({
       where: { id: data.id },
     });
+    console.log(board);
     if (!board) throw new RpcException('Board not found');
     const workspace = await this.workspaceRepository.findOne({
       where: { id: board.workspace.id },

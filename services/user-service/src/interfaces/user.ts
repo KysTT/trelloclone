@@ -11,6 +11,13 @@ import { Observable } from 'rxjs';
 
 export const protobufPackage = 'user';
 
+export enum VisibilityEnum {
+  public = 0,
+  workspace = 1,
+  private = 2,
+  UNRECOGNIZED = -1,
+}
+
 export interface CreateUserRequest {
   name: string;
   username: string;
@@ -62,7 +69,7 @@ export interface Workspace {
 export interface Board {
   id: number;
   name: string;
-  visibility: string;
+  visibility: VisibilityEnum;
 }
 
 export interface Card {

@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
-import { WorkspaceController } from './workspace.controller';
-import { WorkspaceService } from './workspace.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BoardController } from './board.controller';
+import { BoardService } from './board.service';
+import { join } from 'path';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from '@/entities/user.entity';
 import { Workspace } from '@/entities/workspace.entity';
 import { Board } from '@/entities/board.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { join } from 'path';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import {
-  protobufPackage,
-  WORKSPACE_PACKAGE_NAME,
-} from '@/interfaces/workspace';
+import { Category } from '@/entities/category.entity';
 import { JwtAuthInterceptor } from '@/jwt.interceptor';
+import { BOARD_PACKAGE_NAME, protobufPackage } from '@/interfaces/board';
 
 @Module({
   imports: [
@@ -36,7 +34,7 @@ import { JwtAuthInterceptor } from '@/jwt.interceptor';
         // migrationsRun: true,
       }),
     }),
-    TypeOrmModule.forFeature([User, Workspace, Board]),
+    TypeOrmModule.forFeature([User, Workspace, Board, Category]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -49,17 +47,17 @@ import { JwtAuthInterceptor } from '@/jwt.interceptor';
     }),
     ClientsModule.register([
       {
-        name: WORKSPACE_PACKAGE_NAME,
+        name: BOARD_PACKAGE_NAME,
         transport: Transport.GRPC,
         options: {
           package: protobufPackage,
-          protoPath: join(__dirname, './proto/workspace.proto'),
+          protoPath: join(__dirname, './proto/board.proto'),
           url: `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`,
         },
       },
     ]),
   ],
-  controllers: [WorkspaceController],
-  providers: [WorkspaceService, JwtAuthInterceptor],
+  controllers: [BoardController],
+  providers: [BoardService, JwtAuthInterceptor],
 })
 export class AppModule {}

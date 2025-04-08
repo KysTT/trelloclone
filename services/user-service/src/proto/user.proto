@@ -61,11 +61,17 @@ message Workspace {
 message Board {
   int32 id = 1;
   string name = 2;
-  string visibility = 3;
+  VisibilityEnum visibility = 3;
 }
 
 message Card {
   int32 id = 1;
   string name = 2;
   string description = 3;
+}
+
+enum VisibilityEnum {
+  public = 0;
+  workspace = 1;
+  private = 2;
 }

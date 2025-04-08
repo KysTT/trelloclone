@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -15,6 +15,8 @@ import {
   USER_SERVICE_NAME,
   UserServiceClient,
 } from '@/interfaces/user';
+import { plainToInstance } from 'class-transformer';
+import { FindFullUserDto } from '@/dto/draw-full-user.dto';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -42,20 +44,32 @@ export class UserService implements OnModuleInit {
     });
   }
 
-  async findUserByEmail(
-    data: FindByEmailRequest,
-  ): Promise<FindUserResponse | null> {
-    return await this.userRepository.findOne({
+  async findUserByEmail(data: FindByEmailRequest): Promise<FindUserResponse> {
+    const user = await this.userRepository.findOne({
       where: { email: data.email },
     });
+    if (!user) {
+      throw new RpcException('User does not exist');
+    }
+    return user;
   }
 
   async findUserByEmailFull(
     data: FindByEmailRequest,
-  ): Promise<FindUserFullResponse | null> {
-    return await this.userRepository.findOne({
+  ): Promise<FindUserFullResponse> {
+    const user = await this.userRepository.findOne({
       where: { email: data.email },
-      relations: ['workspaces', 'attached_cards', 'boards_member'],
+      relations: {
+        workspaces: true,
+        boards_member: true,
+        attached_cards: true,
+      },
+      relationLoadStrategy: 'query',
     });
+    if (!user) {
+      throw new RpcException('User does not exist');
+    }
+    console.log(user);
+    return plainToInstance(FindFullUserDto, user);
   }
 }

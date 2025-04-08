@@ -27,11 +27,7 @@ export class UserController implements UserServiceController {
   @UseInterceptors(JwtAuthInterceptor)
   @GrpcMethod(USER_SERVICE_NAME, 'findUserByEmail')
   async findUserByEmail(data: FindByEmailRequest): Promise<FindUserResponse> {
-    const user = await this.userService.findUserByEmail(data);
-    if (!user) {
-      throw new RpcException('User does not exist');
-    }
-    return user;
+    return await this.userService.findUserByEmail(data);
   }
 
   @UseInterceptors(JwtAuthInterceptor)
@@ -39,11 +35,7 @@ export class UserController implements UserServiceController {
   async findUserByEmailFull(
     data: FindByEmailRequest,
   ): Promise<FindUserFullResponse> {
-    const user = await this.userService.findUserByEmailFull(data);
-    if (!user) {
-      throw new RpcException('User does not exist');
-    }
-    return user;
+    return await this.userService.findUserByEmailFull(data);
   }
 
   @UseInterceptors(JwtAuthInterceptor)
@@ -61,10 +53,6 @@ export class UserController implements UserServiceController {
     if (!data['user']) {
       throw new RpcException('Something went wrong');
     }
-    const user = await this.userService.findUserByEmailFull(data['user'].email);
-    if (!user) {
-      throw new RpcException('User does not exist');
-    }
-    return user;
+    return await this.userService.findUserByEmailFull(data['user'].email);
   }
 }

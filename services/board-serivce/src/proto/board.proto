@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package board;
+
+service BoardService {
+  rpc Create (CreateBoardRequest) returns (DrawBoardResponse);
+  rpc FindById (FindByIdRequest) returns (DrawBoardResponse);
+  rpc FindByWorkspaceId (FindByIdRequest) returns (DrawBoardsResponse);
+  rpc FindByUserId (FindByIdRequest) returns (DrawBoardsResponse);
+}
+
+message CreateBoardRequest {
+  string name = 1;
+  VisibilityEnum visibility = 2;
+  int32 workspace_id = 3;
+  int32 user_id = 4;
+}
+
+message FindByIdRequest {
+  int32 id = 1;
+}
+
+message DrawBoardsResponse {
+  repeated DrawBoardResponse boards = 1;
+}
+
+message DrawBoardResponse {
+  int32 id = 1;
+  string name = 2;
+  VisibilityEnum visibility = 3;
+  repeated Category categories = 4;
+}
+
+enum VisibilityEnum {
+  public = 0;
+  workspace = 1;
+  private = 2;
+}
+
+message Category {
+  int32 id = 1;
+  string name = 2;
+  repeated Card cards = 3;
+}
+
+message Card {
+  int32 id = 1;
+}
